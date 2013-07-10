@@ -23,7 +23,6 @@ Slack::Post.configure(
   username: 'roboto, mr.'
 )
 Slack::Post.post "Domo arrigato.", '#general'
-
 ```
 
 ## Contributing
