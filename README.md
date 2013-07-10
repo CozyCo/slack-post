@@ -6,19 +6,21 @@ TODO: Write a gem description
 
 Add this line to your application's Gemfile:
 
-    gem 'slack-post'
+    gem 'slack-post', git: "git@github.com:CozyCo/slack-post.git", branch: "release"
 
 And then execute:
 
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install slack-post
+    $ bundle install
 
 ## Usage
 
-TODO: Write usage instructions here
+Example:
+```ruby
+require 'slack/post'
+Slack::Post.configure(subdomain: 'myslack', token: 'abc1234567890def', username: 'roboto, mr.')
+Slack::Post.post "Domo arrigato.", '#general'
+
+```
 
 ## Contributing
 
