@@ -1,6 +1,6 @@
 # Slack::Post
 
-TODO: Write a gem description
+Just a simple thing to post messages to your [Slack](http://slack.com) rooms.
 
 ## Installation
 
@@ -17,7 +17,11 @@ And then execute:
 Example:
 ```ruby
 require 'slack/post'
-Slack::Post.configure(subdomain: 'myslack', token: 'abc1234567890def', username: 'roboto, mr.')
+Slack::Post.configure(
+  subdomain: 'myslack',
+  token: 'abc1234567890def',
+  username: 'roboto, mr.'
+)
 Slack::Post.post "Domo arrigato.", '#general'
 
 ```
