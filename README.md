@@ -6,7 +6,7 @@ Just a simple thing to post messages to your [Slack](http://slack.com) rooms.
 
 Add this line to your application's Gemfile:
 
-    gem 'slack-post', git: "git@github.com:CozyCo/slack-post.git", branch: "release"
+    gem 'slack-post'
 
 And then execute:
 
