@@ -22,7 +22,7 @@ Slack::Post.configure(
   token: 'abc1234567890def',
   username: 'roboto, mr.'
 )
-Slack::Post.post "Domo arrigato.", '#general'
+Slack::Post.post "Domo arigato.", '#general'
 ```
 
 ## Contributing
