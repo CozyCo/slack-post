@@ -42,6 +42,12 @@ Usage: slack-post [options]
 $ SLACK_TOKEN="1asbcdsdfpoiej2" slack-post -s foo -r random -m "line1\nline2"
 ```
 
+If SLACK_TOKEN isn't set, slack-post tries to read it from ~/.slack.conf or from the file defined with `--config-file`. 
+```sh
+$ cat ~/.slack.conf
+token: "1asbcdsdfpoiej2"
+```
+
 ## Contributing
 
 1. Fork it
