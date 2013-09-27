@@ -25,6 +25,23 @@ Slack::Post.configure(
 Slack::Post.post "Domo arigato.", '#general'
 ```
 
+### slack-post Command
+
+slack-post comes with a `slack-post` command so you can send messages from the command line:
+
+```sh
+$ slack-post
+Missing options: subdomain, message
+Usage: slack-post [options]
+    -s, --subdomain [SUBDOMAIN]      Your slack subdomain
+    -m, --message [MESSAGE]          Your message
+    -r, --room [ROOM]                The slack room where the message should go (without '#', default 'general')
+    -u, --username [USERNAME]        The username, default 'slackbot'
+    -f, --config-file [CONFIGFILE]   The configuration file with token or set SLACK_TOKEN environment variable
+
+$ SLACK_TOKEN="1asbcdsdfpoiej2" slack-post -s foo -r random -m "line1\nline2"
+```
+
 ## Contributing
 
 1. Fork it
