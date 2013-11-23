@@ -11,7 +11,7 @@ module Slack
 			channel: '#general'
 		}.freeze
 		
-		def self.post(message,chan=nil)
+		def self.post(message,chan=nil,opts={})
 			raise "You need to call Slack::Post.configure before trying to send messages." unless configured?(chan.nil?)
 			pkt = {
 				channel: chan || config[:channel],
@@ -20,6 +20,13 @@ module Slack
 			if config[:username]
 				pkt[:username] = config[:username]
 			end
+			if opts.has_key?(:icon_url)
+				pkt[:icon_url] = opts[:icon_url]
+			end
+			if opts.has_key?(:icon_emoji)
+				pkt[:icon_emoji] = opts[:icon_emoji]
+			end
+			puts pkt.inspect
 			uri = URI.parse(post_url)
 			http = Net::HTTP.new(uri.host, uri.port)
 			http.use_ssl = true
