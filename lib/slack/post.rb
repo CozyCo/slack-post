@@ -65,7 +65,7 @@ module Slack
 			@config = config.merge(prune(opts))
 		end
 		
-		KnownConfigParams = [:username,:channel,:subdomain,:token].freeze
+		KnownConfigParams = [:username,:channel,:subdomain,:token,:icon_url,:icon_emoji].freeze
 		
 		def self.prune(opts)
 			opts.inject({}) do |acc,(k,v)|
