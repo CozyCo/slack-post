@@ -20,13 +20,12 @@ module Slack
 			if config[:username]
 				pkt[:username] = config[:username]
 			end
-			if opts.has_key?(:icon_url)
-				pkt[:icon_url] = opts[:icon_url]
+			if opts.has_key?(:icon_url) or config.has_key?(:icon_url)
+				pkt[:icon_url] = opts[:icon_url] || config[:icon_url]
 			end
-			if opts.has_key?(:icon_emoji)
-				pkt[:icon_emoji] = opts[:icon_emoji]
+			if opts.has_key?(:icon_emoji) or config.has_key?(:icon_emoji)
+				pkt[:icon_emoji] = opts[:icon_emoji] || config[:icon_emoji]
 			end
-			puts pkt.inspect
 			uri = URI.parse(post_url)
 			http = Net::HTTP.new(uri.host, uri.port)
 			http.use_ssl = true
