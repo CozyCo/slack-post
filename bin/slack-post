@@ -1,0 +1,83 @@
+#!/usr/bin/env ruby
+
+require 'slack/post'
+require 'yaml'
+require 'optparse'
+
+def read_token(file)
+  token = ENV['SLACK_TOKEN']
+  if token.nil?
+    if file
+      token = YAML.load_file(file)["token"]
+    else
+      token = YAML.load_file(ENV['HOME'] + "/.slack.conf")["token"] rescue nil
+    end
+  end
+  token
+end
+
+def post(options)
+  unless options[:channel].start_with?("#")
+    options[:channel] = "#" + options[:channel]
+  end
+  Slack::Post.configure options
+  Slack::Post.post options[:message].gsub(/\\n/,"\n")
+end
+
+options = Hash.new
+optparse = OptionParser.new do |opts|
+  opts.banner = "Usage: slack-post [options]"
+
+  opts.on('-s', '--subdomain [SUBDOMAIN]', String, 'Your slack subdomain') do |subdomain|
+    options[:subdomain] = subdomain
+  end
+  
+  opts.on('-m', '--message [MESSAGE]', 'Your message') do |message|
+    options[:message] = message
+  end
+
+  options[:channel] = 'general'
+  opts.on('-r', '--room [ROOM]', String, 'The slack room where the message should go (without \'#\', default \'general\')')   do |room|
+    options[:channel] = room 
+  end
+
+  options[:username] = 'slackbot'
+  opts.on('-u', '--username [USERNAME]', String, 'The username, default \'slackbot\'') do |username|
+    options[:username] = username 
+  end
+
+  opts.on('-f', '--config-file [CONFIGFILE]', String, 'The configuration file with token or set SLACK_TOKEN environment variable') do |config_file|
+    options[:config_file] = config_file
+  end
+
+  opts.on('-h', 'Show this help') do
+    puts opts
+    exit 1
+  end
+end
+
+begin 
+  optparse.parse!
+
+  mandatory = [:subdomain, :message]
+  missing = mandatory.select { |param| options[param].nil? }
+  if not missing.empty?
+    $stderr.puts "Missing options: #{missing.join(', ')}"
+    $stderr.puts optparse
+    exit 1
+  end
+
+  options[:token] = read_token(options[:config_file])
+  if options[:token].nil?
+    $stderr.puts "Could not find any token!"
+    exit 1
+  end
+
+  post options
+rescue => e
+  puts $!.to_s
+  puts optparse
+  exit 1
+end
+
+
