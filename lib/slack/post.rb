@@ -3,6 +3,7 @@ require 'net/http'
 require 'net/https'
 require 'uri'
 require 'yajl'
+require 'pp'
 
 module Slack
 	module Post
@@ -11,7 +12,7 @@ module Slack
 			channel: '#general'
 		}.freeze
 		
-		def self.post(message,chan=nil,opts={})
+		def self.post_with_attachments(message,attachments=[],chan=nil,opts={})
 			raise "You need to call Slack::Post.configure before trying to send messages." unless configured?(chan.nil?)
 			pkt = {
 				channel: chan || config[:channel],
@@ -25,6 +26,9 @@ module Slack
 			end
 			if opts.has_key?(:icon_emoji) or config.has_key?(:icon_emoji)
 				pkt[:icon_emoji] = opts[:icon_emoji] || config[:icon_emoji]
+			end
+			unless attachments == []
+				pkt[:attachments] = validate_attachments(attachments)
 			end
 			uri = URI.parse(post_url)
 			http = Net::HTTP.new(uri.host, uri.port)
@@ -41,6 +45,31 @@ module Slack
 				else
 					raise "There was an error while trying to post. Error was: #{resp.body}"
 			end
+		end
+
+		def validate_attachments(attachments)
+			valid_attachments = []
+			attachments.each do |attachment|
+				valid_attachments << validate_attachment(attachment)
+			end
+			return valid_attachments
+		end
+
+		def validate_attachment(attachment)
+			attachment = attachment.inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
+			validated_attachment = prune(attachment, AttachmentParams)
+			if attachment.has_key?(:fields)
+				validated_attachment[:fields] = []
+				attachment[:fields].each do |field_hash|
+					field_hash = field_hash.inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
+					validated_attachment[:fields] << prune(field_hash, FieldParams)
+				end
+			end
+			return validated_attachment
+		end
+
+		def self.post(message,chan=nil,opts={})
+			post_with_attachments(message, [], chan, opts)
 		end
 		
 		def self.post_url
@@ -65,11 +94,13 @@ module Slack
 		end
 		
 		KnownConfigParams = [:username,:channel,:subdomain,:token,:icon_url,:icon_emoji].freeze
+		AttachmentParams = [:fallback,:text,:pretext,:color,:fields].freeze
+		FieldParams = [:title,:value,:short].freeze
 		
-		def self.prune(opts)
+		def self.prune(opts, allowed_elements=KnownConfigParams)
 			opts.inject({}) do |acc,(k,v)|
 				k = k.to_sym
-				if KnownConfigParams.include?(k)
+				if allowed_elements.include?(k)
 					acc[k] = v
 				end
 				acc
