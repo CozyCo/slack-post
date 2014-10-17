@@ -25,6 +25,31 @@ Slack::Post.configure(
 Slack::Post.post "Domo arigato.", '#general'
 ```
 
+### Attachments
+
+slack-post supports message attachments per Slack's [Attachment](https://api.slack.com/docs/attachments) specification.
+
+Use `Slack::Post.post_with_attachments` to send a message with any number of attachments:
+```ruby
+attachments = [
+  {
+      fallback: "Required text summary...",
+      text: "Optional text that should appear within the attachment",
+      pretext: "Optional text that should appear above the formatted data",
+      color: "#36a64f",
+      fields: [
+          {
+              title: "Required Field Title",
+              value: "Text value of the field.",
+              short: false
+          }
+      ]
+  }
+]
+
+Slack::Post.post_with_attachments "Domo arigato.", attachments, '#general'
+```
+
 ### slack-post Command
 
 slack-post comes with a `slack-post` command so you can send messages from the command line:
