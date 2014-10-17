@@ -28,7 +28,7 @@ module Slack
 				pkt[:icon_emoji] = opts[:icon_emoji] || config[:icon_emoji]
 			end
 			unless attachments == []
-				pkt[:attachments] = validate_attachments(attachments)
+				pkt[:attachments] = attachments.map { |a| validate_attachment(a) }
 			end
 			uri = URI.parse(post_url)
 			http = Net::HTTP.new(uri.host, uri.port)
@@ -45,14 +45,6 @@ module Slack
 				else
 					raise "There was an error while trying to post. Error was: #{resp.body}"
 			end
-		end
-
-		def validate_attachments(attachments)
-			valid_attachments = []
-			attachments.each do |attachment|
-				valid_attachments << validate_attachment(attachment)
-			end
-			return valid_attachments
 		end
 
 		def validate_attachment(attachment)
