@@ -12,7 +12,7 @@ module Slack
 			channel: '#general'
 		}.freeze
 		
-		def self.post_with_attachments(message,attachments=[],chan=nil,opts={})
+		def self.post_with_attachments(message,attachments,chan=nil,opts={})
 			raise "You need to call Slack::Post.configure before trying to send messages." unless configured?(chan.nil?)
 			pkt = {
 				channel: chan || config[:channel],
@@ -27,8 +27,8 @@ module Slack
 			if opts.has_key?(:icon_emoji) or config.has_key?(:icon_emoji)
 				pkt[:icon_emoji] = opts[:icon_emoji] || config[:icon_emoji]
 			end
-			unless attachments == []
-				pkt[:attachments] = attachments.map { |a| validate_attachment(a) }
+			if attachments.instance_of?(Array) && attachments != []
+				pkt[:attachments] = attachments.map { |a| validated_attachment(a) }
 			end
 			uri = URI.parse(post_url)
 			http = Net::HTTP.new(uri.host, uri.port)
@@ -47,17 +47,17 @@ module Slack
 			end
 		end
 
-		def validate_attachment(attachment)
+		def self.validated_attachment(attachment)
 			attachment = attachment.inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
-			validated_attachment = prune(attachment, AttachmentParams)
+			valid_attachment = prune(attachment, AttachmentParams)
 			if attachment.has_key?(:fields)
-				validated_attachment[:fields] = []
+				valid_attachment[:fields] = []
 				attachment[:fields].each do |field_hash|
 					field_hash = field_hash.inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
-					validated_attachment[:fields] << prune(field_hash, FieldParams)
+					valid_attachment[:fields] << prune(field_hash, FieldParams)
 				end
 			end
-			return validated_attachment
+			return valid_attachment
 		end
 
 		def self.post(message,chan=nil,opts={})
