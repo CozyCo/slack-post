@@ -48,14 +48,9 @@ module Slack
 		end
 
 		def self.validated_attachment(attachment)
-			attachment = attachment.inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
-			valid_attachment = prune(attachment, AttachmentParams)
+			valid_attachment = prune(symbolize_keys(attachment), AttachmentParams)
 			if attachment.has_key?(:fields)
-				valid_attachment[:fields] = []
-				attachment[:fields].each do |field_hash|
-					field_hash = field_hash.inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
-					valid_attachment[:fields] << prune(field_hash, FieldParams)
-				end
+				valid_attachment[:fields] = attachment[:fields].map { |h| prune(symbolize_keys(h), FieldParams) }
 			end
 			return valid_attachment
 		end
@@ -97,6 +92,10 @@ module Slack
 				end
 				acc
 			end
+		end
+
+		def self.symbolize_keys(hash)
+			return hash.inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
 		end
 		
 	end
