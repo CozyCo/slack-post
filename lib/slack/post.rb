@@ -3,7 +3,6 @@ require 'net/http'
 require 'net/https'
 require 'uri'
 require 'yajl'
-require 'pp'
 
 module Slack
 	module Post
