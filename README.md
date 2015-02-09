@@ -16,20 +16,20 @@ And then execute:
 
 Example:
 ```ruby
-require 'slack/post'
-Slack::Post.configure(
+require 'slack-post'
+SlackPost.configure(
   subdomain: 'myslack',
   token: 'abc1234567890def',
   username: 'roboto, mr.'
 )
-Slack::Post.post "Domo arigato.", '#general'
+SlackPost.post "Domo arigato.", '#general'
 ```
 
 ### Attachments
 
 slack-post supports message attachments per Slack's [Attachment](https://api.slack.com/docs/attachments) specification.
 
-Use `Slack::Post.post_with_attachments` to send a message with any number of attachments:
+Use `SlackPost.post_with_attachments` to send a message with any number of attachments:
 ```ruby
 attachments = [
   {
@@ -47,7 +47,7 @@ attachments = [
   }
 ]
 
-Slack::Post.post_with_attachments "Domo arigato.", attachments, '#general'
+SlackPost.post_with_attachments "Domo arigato.", attachments, '#general'
 ```
 
 ### slack-post Command
