@@ -59,14 +59,17 @@ module Slack
 		end
 		
 		def self.post_url
-			"https://#{config[:subdomain]}.slack.com/services/hooks/incoming-webhook?token=#{config[:token]}"
+			config[:webhook_url] || "https://#{config[:subdomain]}.slack.com/services/hooks/incoming-webhook?token=#{config[:token]}"
 		end
 		
-		NecessaryConfigParams = [:subdomain,:token].freeze
+		LegacyConfigParams = [:subdomain,:token].freeze
 		
 		def self.configured?(needs_channel=true)
 			return false if needs_channel and !config[:channel]
-			NecessaryConfigParams.all? do |parm|
+
+			# we need _either_ a webhook url or all LegacyConfigParams
+			return true if config[:webhook_url]
+			LegacyConfigParams.all? do |parm|
 				config[parm]
 			end
 		end
@@ -79,7 +82,7 @@ module Slack
 			@config = config.merge(prune(opts))
 		end
 		
-		KnownConfigParams = [:username,:channel,:subdomain,:token,:icon_url,:icon_emoji].freeze
+		KnownConfigParams = [:webhook_url,:username,:channel,:subdomain,:token,:icon_url,:icon_emoji].freeze
 		AttachmentParams = [:fallback,:text,:pretext,:color,:fields].freeze
 		FieldParams = [:title,:value,:short].freeze
 		
