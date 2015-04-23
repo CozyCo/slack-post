@@ -18,8 +18,13 @@ Example:
 ```ruby
 require 'slack/post'
 Slack::Post.configure(
+  # you may provide a webhook URL (recommended)
+  webhook_url: 'https://hooks.slack.com/services/N0TRE4LLY/AL1V3URL/fdjm89vn2bv9cvbsvHfdm8hdkl'
+
+  # OR a subdomain/token combo, which will use Slack's legacy team-specific webhook URL (not recommended)
   subdomain: 'myslack',
   token: 'abc1234567890def',
+
   username: 'roboto, mr.'
 )
 Slack::Post.post "Domo arigato.", '#general'
