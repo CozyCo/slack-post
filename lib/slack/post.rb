@@ -6,11 +6,11 @@ require 'yajl'
 
 module Slack
 	module Post
-		
+
 		DefaultOpts = {
 			channel: '#general'
 		}.freeze
-		
+
 		def self.post_with_attachments(message,attachments,chan=nil,opts={})
 			raise "Slack::Post.configure was not called or configuration was invalid" unless configured?(chan)
 			pkt = {
@@ -20,7 +20,7 @@ module Slack
 			if config[:username]
 				pkt[:username] = config[:username]
 			end
-			if opts.has_key?(:icon_url) or config.has_key?(:icon_url)
+			if opts.has_key?(:icon_url) || config.has_key?(:icon_url)
 				pkt[:icon_url] = opts[:icon_url] || config[:icon_url]
 			end
 			if opts.has_key?(:icon_emoji) or config.has_key?(:icon_emoji)
@@ -57,13 +57,13 @@ module Slack
 		def self.post(message,chan=nil,opts={})
 			post_with_attachments(message, [], chan, opts)
 		end
-		
+
 		def self.post_url
 			config[:webhook_url] || "https://#{config[:subdomain]}.slack.com/services/hooks/incoming-webhook?token=#{config[:token]}"
 		end
-		
+
 		LegacyConfigParams = [:subdomain,:token].freeze
-		
+
 		def self.configured?(channel_was_overriden=false)
 			# if a channel was not manually specified, then we must have a channel option in the config OR
 			# we must be using the webhook_url which provided its own default channel on the Slack-side config.
@@ -75,11 +75,11 @@ module Slack
 				config[parm]
 			end
 		end
-		
+
 		def self.config
 			@config ||= {}
 		end
-		
+
 		def self.configure(opts)
 			@config = config.merge(prune(opts))
 
@@ -87,11 +87,11 @@ module Slack
 			# unless we are using a webhook_url, which provides its own default channel.
 			@config.merge!(DefaultOpts) unless ( @config[:webhook_url] || @config[:channel] )
 		end
-		
+
 		KnownConfigParams = [:webhook_url,:username,:channel,:subdomain,:token,:icon_url,:icon_emoji].freeze
 		AttachmentParams = [:fallback,:text,:pretext,:color,:fields].freeze
 		FieldParams = [:title,:value,:short].freeze
-		
+
 		def self.prune(opts, allowed_elements=KnownConfigParams)
 			opts.inject({}) do |acc,(k,v)|
 				k = k.to_sym
@@ -105,6 +105,6 @@ module Slack
 		def self.symbolize_keys(hash)
 			return hash.inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
 		end
-		
+
 	end
 end
