@@ -24,26 +24,26 @@ def post(options)
   Slack::Post.post options[:message].gsub(/\\n/,"\n")
 end
 
-options = Hash.new
+options = {}
 optparse = OptionParser.new do |opts|
   opts.banner = "Usage: slack-post [options]"
 
   opts.on('-s', '--subdomain [SUBDOMAIN]', String, 'Your slack subdomain') do |subdomain|
     options[:subdomain] = subdomain
   end
-  
+
   opts.on('-m', '--message [MESSAGE]', 'Your message') do |message|
     options[:message] = message
   end
 
   options[:channel] = 'general'
   opts.on('-r', '--room [ROOM]', String, 'The slack room where the message should go (without \'#\', default \'general\')')   do |room|
-    options[:channel] = room 
+    options[:channel] = room
   end
 
   options[:username] = 'slackbot'
   opts.on('-u', '--username [USERNAME]', String, 'The username, default \'slackbot\'') do |username|
-    options[:username] = username 
+    options[:username] = username
   end
 
   opts.on('-f', '--config-file [CONFIGFILE]', String, 'The configuration file with token or set SLACK_TOKEN environment variable') do |config_file|
@@ -56,12 +56,12 @@ optparse = OptionParser.new do |opts|
   end
 end
 
-begin 
+begin
   optparse.parse!
 
   mandatory = [:subdomain, :message]
   missing = mandatory.select { |param| options[param].nil? }
-  if not missing.empty?
+  unless missing.empty?
     $stderr.puts "Missing options: #{missing.join(', ')}"
     $stderr.puts optparse
     exit 1
@@ -79,5 +79,3 @@ rescue => e
   puts optparse
   exit 1
 end
-
-
