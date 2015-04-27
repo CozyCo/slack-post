@@ -7,16 +7,13 @@ require 'yajl'
 module Slack
 	module Post
 		
-		DefaultOpts = {
-			channel: '#general'
-		}.freeze
-		
 		def self.post_with_attachments(message,attachments,chan=nil,opts={})
-			raise "You need to call Slack::Post.configure before trying to send messages." unless configured?(chan.nil?)
-			pkt = {
-				channel: chan || config[:channel],
-				text: message,
-			}
+			raise 'You need to call Slack::Post.configure before trying to send messages.' unless configured?
+			# build the payload
+			pkt = { text: message }
+			if chan || config[:channel]
+				pkt[:channel] = chan || config[:channel]
+			end
 			if config[:username]
 				pkt[:username] = config[:username]
 			end
@@ -64,18 +61,18 @@ module Slack
 		
 		LegacyConfigParams = [:subdomain,:token].freeze
 		
-		def self.configured?(needs_channel=true)
-			return false if needs_channel and !config[:channel]
 
-			# we need _either_ a webhook url or all LegacyConfigParams
+		# we need _either_ a webhook url or all LegacyConfigParams
+		def self.configured?
 			return true if config[:webhook_url]
 			LegacyConfigParams.all? do |parm|
 				config[parm]
+				config[:channel] = '#general' unless config[:channel]
 			end
 		end
 		
 		def self.config
-			@config ||= DefaultOpts
+			@config ||= {}
 		end
 		
 		def self.configure(opts)
