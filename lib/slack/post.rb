@@ -12,7 +12,7 @@ module Slack
 		}.freeze
 		
 		def self.post_with_attachments(message,attachments,chan=nil,opts={})
-			raise "You need to call Slack::Post.configure before trying to send messages." unless configured?(chan.nil?)
+			raise "Slack::Post.configure was not called or configuration was invalid" unless configured?(chan)
 			pkt = {
 				channel: chan || config[:channel],
 				text: message,
@@ -64,8 +64,10 @@ module Slack
 		
 		LegacyConfigParams = [:subdomain,:token].freeze
 		
-		def self.configured?(needs_channel=true)
-			return false if needs_channel and !config[:channel]
+		def self.configured?(channel_was_overriden=false)
+			# if a channel was not manually specified, then we must have a channel option in the config OR
+			# we must be using the webhook_url which provided its own default channel on the Slack-side config.
+			return false if !channel_was_overriden && !config[:channel] && !config[:webhook_url]
 
 			# we need _either_ a webhook url or all LegacyConfigParams
 			return true if config[:webhook_url]
@@ -75,11 +77,15 @@ module Slack
 		end
 		
 		def self.config
-			@config ||= DefaultOpts
+			@config ||= {}
 		end
 		
 		def self.configure(opts)
 			@config = config.merge(prune(opts))
+
+			# If a channel has not been configured, add the default channel
+			# unless we are using a webhook_url, which provides its own default channel.
+			@config.merge!(DefaultOpts) unless ( @config[:webhook_url] || @config[:channel] )
 		end
 		
 		KnownConfigParams = [:webhook_url,:username,:channel,:subdomain,:token,:icon_url,:icon_emoji].freeze
