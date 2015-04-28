@@ -11,19 +11,19 @@ module Slack
 			channel: '#general'
 		}.freeze
 
-		def self.post_with_attachments(message,attachments,chan=nil,opts={})
-			raise "Slack::Post.configure was not called or configuration was invalid" unless configured?(chan)
+		def self.post_with_attachments(message, attachments, chan = nil, opts = {})
+			fail "Slack::Post.configure was not called or configuration was invalid" unless configured?(chan)
 			pkt = {
 				channel: chan || config[:channel],
-				text: message,
+				text: message
 			}
 			if config[:username]
 				pkt[:username] = config[:username]
 			end
-			if opts.has_key?(:icon_url) || config.has_key?(:icon_url)
+			if opts.key?(:icon_url) || config.key?(:icon_url)
 				pkt[:icon_url] = opts[:icon_url] || config[:icon_url]
 			end
-			if opts.has_key?(:icon_emoji) or config.has_key?(:icon_emoji)
+			if opts.key?(:icon_emoji) || config.key?(:icon_emoji)
 				pkt[:icon_emoji] = opts[:icon_emoji] || config[:icon_emoji]
 			end
 			if attachments.instance_of?(Array) && attachments != []
@@ -42,19 +42,19 @@ module Slack
 				when Net::HTTPSuccess
 					return true
 				else
-					raise "There was an error while trying to post. Error was: #{resp.body}"
+					fail "There was an error while trying to post. Error was: #{resp.body}"
 			end
 		end
 
 		def self.validated_attachment(attachment)
 			valid_attachment = prune(symbolize_keys(attachment), AttachmentParams)
-			if attachment.has_key?(:fields)
+			if attachment.key?(:fields)
 				valid_attachment[:fields] = attachment[:fields].map { |h| prune(symbolize_keys(h), FieldParams) }
 			end
 			return valid_attachment
 		end
 
-		def self.post(message,chan=nil,opts={})
+		def self.post(message, chan = nil, opts = {})
 			post_with_attachments(message, [], chan, opts)
 		end
 
@@ -62,9 +62,9 @@ module Slack
 			config[:webhook_url] || "https://#{config[:subdomain]}.slack.com/services/hooks/incoming-webhook?token=#{config[:token]}"
 		end
 
-		LegacyConfigParams = [:subdomain,:token].freeze
+		LegacyConfigParams = [:subdomain, :token].freeze
 
-		def self.configured?(channel_was_overriden=false)
+		def self.configured?(channel_was_overriden = false)
 			# if a channel was not manually specified, then we must have a channel option in the config OR
 			# we must be using the webhook_url which provided its own default channel on the Slack-side config.
 			return false if !channel_was_overriden && !config[:channel] && !config[:webhook_url]
@@ -85,15 +85,15 @@ module Slack
 
 			# If a channel has not been configured, add the default channel
 			# unless we are using a webhook_url, which provides its own default channel.
-			@config.merge!(DefaultOpts) unless ( @config[:webhook_url] || @config[:channel] )
+			@config.merge!(DefaultOpts) unless @config[:webhook_url] || @config[:channel]
 		end
 
-		KnownConfigParams = [:webhook_url,:username,:channel,:subdomain,:token,:icon_url,:icon_emoji].freeze
-		AttachmentParams = [:fallback,:text,:pretext,:color,:fields].freeze
-		FieldParams = [:title,:value,:short].freeze
+		KnownConfigParams = [:webhook_url, :username, :channel, :subdomain, :token, :icon_url, :icon_emoji].freeze
+		AttachmentParams = [:fallback, :text, :pretext, :color, :fields].freeze
+		FieldParams = [:title, :value, :short].freeze
 
-		def self.prune(opts, allowed_elements=KnownConfigParams)
-			opts.inject({}) do |acc,(k,v)|
+		def self.prune(opts, allowed_elements = KnownConfigParams)
+			opts.inject({}) do |acc, (k, v)|
 				k = k.to_sym
 				if allowed_elements.include?(k)
 					acc[k] = v
@@ -103,7 +103,7 @@ module Slack
 		end
 
 		def self.symbolize_keys(hash)
-			return hash.inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
+			return hash.inject({}) { |memo, (k, v)| memo[k.to_sym] = v; memo }
 		end
 
 	end
