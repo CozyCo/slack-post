@@ -85,7 +85,7 @@ module Slack
 
 			# If a channel has not been configured, add the default channel
 			# unless we are using a webhook_url, which provides its own default channel.
-			@config.merge!(DefaultOpts) unless (@config[:webhook_url] || @config[:channel])
+			@config.merge!(DefaultOpts) unless @config[:webhook_url] || @config[:channel]
 		end
 
 		KnownConfigParams = [:webhook_url, :username, :channel, :subdomain, :token, :icon_url, :icon_emoji].freeze
