@@ -11,8 +11,8 @@ module Slack
 			channel: '#general'
 		}.freeze
 
-		def self.post_with_attachments(message,attachments,chan=nil,opts={})
 			raise "Slack::Post.configure was not called or configuration was invalid" unless configured?(chan)
+		def self.post_with_attachments(message, attachments, chan = nil, opts = {})
 			pkt = {
 				channel: chan || config[:channel],
 				text: message
@@ -54,7 +54,7 @@ module Slack
 			return valid_attachment
 		end
 
-		def self.post(message,chan=nil,opts={})
+		def self.post(message, chan = nil, opts = {})
 			post_with_attachments(message, [], chan, opts)
 		end
 
@@ -62,9 +62,9 @@ module Slack
 			config[:webhook_url] || "https://#{config[:subdomain]}.slack.com/services/hooks/incoming-webhook?token=#{config[:token]}"
 		end
 
-		LegacyConfigParams = [:subdomain,:token].freeze
+		LegacyConfigParams = [:subdomain, :token].freeze
 
-		def self.configured?(channel_was_overriden=false)
+		def self.configured?(channel_was_overriden = false)
 			# if a channel was not manually specified, then we must have a channel option in the config OR
 			# we must be using the webhook_url which provided its own default channel on the Slack-side config.
 			return false if !channel_was_overriden && !config[:channel] && !config[:webhook_url]
@@ -85,15 +85,15 @@ module Slack
 
 			# If a channel has not been configured, add the default channel
 			# unless we are using a webhook_url, which provides its own default channel.
-			@config.merge!(DefaultOpts) unless ( @config[:webhook_url] || @config[:channel] )
+			@config.merge!(DefaultOpts) unless (@config[:webhook_url] || @config[:channel])
 		end
 
-		KnownConfigParams = [:webhook_url,:username,:channel,:subdomain,:token,:icon_url,:icon_emoji].freeze
-		AttachmentParams = [:fallback,:text,:pretext,:color,:fields].freeze
-		FieldParams = [:title,:value,:short].freeze
+		KnownConfigParams = [:webhook_url, :username, :channel, :subdomain, :token, :icon_url, :icon_emoji].freeze
+		AttachmentParams = [:fallback, :text, :pretext, :color, :fields].freeze
+		FieldParams = [:title, :value, :short].freeze
 
-		def self.prune(opts, allowed_elements=KnownConfigParams)
-			opts.inject({}) do |acc,(k,v)|
+		def self.prune(opts, allowed_elements = KnownConfigParams)
+			opts.inject({}) do |acc, (k, v)|
 				k = k.to_sym
 				if allowed_elements.include?(k)
 					acc[k] = v
@@ -103,7 +103,7 @@ module Slack
 		end
 
 		def self.symbolize_keys(hash)
-			return hash.inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
+			return hash.inject({}) { |memo, (k, v)| memo[k.to_sym] = v; memo }
 		end
 
 	end

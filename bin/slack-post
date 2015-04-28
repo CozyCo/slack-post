@@ -21,7 +21,7 @@ def post(options)
     options[:channel] = "#" + options[:channel]
   end
   Slack::Post.configure options
-  Slack::Post.post options[:message].gsub(/\\n/,"\n")
+  Slack::Post.post options[:message].gsub(/\\n/, "\n")
 end
 
 options = {}
