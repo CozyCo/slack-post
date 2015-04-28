@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
 	spec.version       = Slack::Post::VERSION
 	spec.authors       = ["John Bragg"]
 	spec.email         = ["remotezygote@gmail.com"]
-	spec.description   = %q{Pretty simple really. It posts to slack fer ya.}
-	spec.summary       = %q{It's for posting messages to your slack.}
+	spec.description   = 'Pretty simple really. It posts to slack fer ya.'
+	spec.summary       = "It's for posting messages to your slack."
 	spec.homepage      = ""
 	spec.license       = "MIT"
 
