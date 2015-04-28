@@ -20,10 +20,10 @@ module Slack
 			if config[:username]
 				pkt[:username] = config[:username]
 			end
-			if opts.has_key?(:icon_url) || config.has_key?(:icon_url)
+			if opts.key?(:icon_url) || config.key?(:icon_url)
 				pkt[:icon_url] = opts[:icon_url] || config[:icon_url]
 			end
-			if opts.has_key?(:icon_emoji) or config.has_key?(:icon_emoji)
+			if opts.key?(:icon_emoji) || config.key?(:icon_emoji)
 				pkt[:icon_emoji] = opts[:icon_emoji] || config[:icon_emoji]
 			end
 			if attachments.instance_of?(Array) && attachments != []
@@ -48,7 +48,7 @@ module Slack
 
 		def self.validated_attachment(attachment)
 			valid_attachment = prune(symbolize_keys(attachment), AttachmentParams)
-			if attachment.has_key?(:fields)
+			if attachment.key?(:fields)
 				valid_attachment[:fields] = attachment[:fields].map { |h| prune(symbolize_keys(h), FieldParams) }
 			end
 			return valid_attachment
