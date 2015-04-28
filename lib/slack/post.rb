@@ -15,7 +15,7 @@ module Slack
 			raise "Slack::Post.configure was not called or configuration was invalid" unless configured?(chan)
 			pkt = {
 				channel: chan || config[:channel],
-				text: message,
+				text: message
 			}
 			if config[:username]
 				pkt[:username] = config[:username]
