@@ -11,8 +11,8 @@ module Slack
 			channel: '#general'
 		}.freeze
 
-			raise "Slack::Post.configure was not called or configuration was invalid" unless configured?(chan)
 		def self.post_with_attachments(message, attachments, chan = nil, opts = {})
+			fail "Slack::Post.configure was not called or configuration was invalid" unless configured?(chan)
 			pkt = {
 				channel: chan || config[:channel],
 				text: message
@@ -42,7 +42,7 @@ module Slack
 				when Net::HTTPSuccess
 					return true
 				else
-					raise "There was an error while trying to post. Error was: #{resp.body}"
+					fail "There was an error while trying to post. Error was: #{resp.body}"
 			end
 		end
 
