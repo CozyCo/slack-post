@@ -89,7 +89,7 @@ module Slack
 		end
 
 		KnownConfigParams = [:webhook_url, :username, :channel, :subdomain, :token, :icon_url, :icon_emoji].freeze
-		AttachmentParams = [:fallback, :text, :pretext, :color, :fields, :image_url].freeze
+		AttachmentParams = [:fallback, :text, :pretext, :color, :fields, :image_url, :mrkdwn_in].freeze
 		FieldParams = [:title, :value, :short].freeze
 
 		def self.prune(opts, allowed_elements = KnownConfigParams)
