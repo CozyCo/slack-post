@@ -8,14 +8,14 @@ module Slack
 	module Post
 
 		DefaultOpts = {
-			channel: '#general'
+			:channel => '#general'
 		}.freeze
 
 		def self.post_with_attachments(message, attachments, chan = nil, opts = {})
 			fail "Slack::Post.configure was not called or configuration was invalid" unless configured?(chan)
 			pkt = {
-				channel: chan || config[:channel],
-				text: message
+				:channel => chan || config[:channel],
+				:text => message
 			}
 			if config[:username]
 				pkt[:username] = config[:username]
