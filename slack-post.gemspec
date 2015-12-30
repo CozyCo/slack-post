@@ -6,8 +6,8 @@ require 'slack/post/version'
 Gem::Specification.new do |spec|
 	spec.name          = "slack-post"
 	spec.version       = Slack::Post::VERSION
-	spec.authors       = ["John Bragg"]
-	spec.email         = ["remotezygote@gmail.com"]
+	spec.authors       = ["John Bragg", "Rodrigo Toledo"]
+	spec.email         = ["remotezygote@gmail.com", "rodrigo@rtoledo.inf.br"]
 	spec.description   = 'Pretty simple really. It posts to slack fer ya.'
 	spec.summary       = "It's for posting messages to your slack."
 	spec.homepage      = ""
