@@ -12,6 +12,8 @@ And then execute:
 
     $ bundle install
 
+This gem should be compatible with most ruby versions and interpreters. MRI 1.8.7 is supported on a best-effort basis.
+
 ## Usage
 
 Example:
