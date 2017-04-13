@@ -42,7 +42,7 @@ module Slack
 				when Net::HTTPSuccess
 					return true
 				else
-					fail "There was an error while trying to post. Error was: #{resp.body}"
+					fail "Recieved a #{resp.code} response while trying to post. Response body: #{resp.body}"
 			end
 		end
 
