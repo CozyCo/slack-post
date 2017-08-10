@@ -1,4 +1,4 @@
-require "slack/post/version"
+require 'slack/post/version'
 require 'net/http'
 require 'net/https'
 require 'uri'
@@ -30,7 +30,8 @@ module Slack
 				pkt[:attachments] = attachments.map { |a| validated_attachment(a) }
 			end
 			uri = URI.parse(post_url)
-			http = Net::HTTP.new(uri.host, uri.port)
+
+			http = Net::HTTP.new(uri.host, uri.port, config[:proxy_host], config[:proxy_port])
 			http.use_ssl = true
 			http.ssl_version = :TLSv1
 			http.verify_mode = OpenSSL::SSL::VERIFY_PEER
@@ -42,7 +43,7 @@ module Slack
 				when Net::HTTPSuccess
 					return true
 				else
-					fail "Recieved a #{resp.code} response while trying to post. Response body: #{resp.body}"
+					fail "Received a #{resp.code} response while trying to post. Response body: #{resp.body}"
 			end
 		end
 
@@ -88,7 +89,7 @@ module Slack
 			@config.merge!(DefaultOpts) unless @config[:webhook_url] || @config[:channel]
 		end
 
-		KnownConfigParams = [:webhook_url, :username, :channel, :subdomain, :token, :icon_url, :icon_emoji].freeze
+		KnownConfigParams = [:webhook_url, :username, :channel, :subdomain, :token, :icon_url, :icon_emoji, :proxy_host, :proxy_port].freeze
 		AttachmentParams = [:fallback, :title, :title_link, :author_name, :author_link, :author_icon, :image_url, :thumb_url, :text, :pretext, :color, :fields, :footer, :footer_icon, :ts, :mrkdwn_in].freeze
 		FieldParams = [:title, :value, :short].freeze
 
