@@ -32,6 +32,17 @@ Slack::Post.configure(
 Slack::Post.post "Domo arigato.", '#general'
 ```
 
+### Proxy support
+If you need to connect to Slack via a HTTP proxy, use `proxy_host` and `proxy_port` in your `configure()` call:
+
+```ruby
+Slack::Post.configure(
+  webhook_url: 'https://hooks.slack.com/services/N0TRE4LLY/AL1V3URL/fdjm89vn2bv9cvbsvHfdm8hdkl',
+  proxy_host: '10.0.0.1',
+  proxy_port: 8080
+)
+```
+
 ### Attachments
 
 slack-post supports message attachments per Slack's [Attachment](https://api.slack.com/docs/attachments) specification.
