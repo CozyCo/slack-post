@@ -33,7 +33,7 @@ module Slack
 
 			http = Net::HTTP.new(uri.host, uri.port, config[:proxy_host], config[:proxy_port])
 			http.use_ssl = true
-			http.ssl_version = :TLSv1_2
+			http.min_version = OpenSSL::SSL::TLS1_2_VERSION
 			http.verify_mode = OpenSSL::SSL::VERIFY_PEER
 			req = Net::HTTP::Post.new(uri.request_uri)
 			req.body = Yajl::Encoder.encode(pkt)
